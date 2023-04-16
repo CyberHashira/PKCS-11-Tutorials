@@ -1,0 +1,147 @@
+SoftHSM
+==========
+
+SoftHSM is a software based implementation of a hardware security module. It support pkcs#11 api and can be used to test PKCS #11 based applications.
+
+To learn more about softhsm, use this link : https://www.opendnssec.org/softhsm/
+
+
+
+
+# Installing SoftHSM2 on Windows
+-----------------------------------
+
+Download the installer for softhsm from the link below. Follow the simple installation wizard.
+https://github.com/disig/SoftHSM2-for-Windows/releases
+
+Softhsm only has the functionality of a hardware security module. It does not include any utility to perform cryptographic operations. For this tutorial, we will be using OpenSC
+https://github.com/OpenSC/OpenSC
+
+
+
+
+
+# Build and Install SoftHSM2 on Linux
+-------------------------------------
+
+> Install required dependencies. Ubuntu 22.04
+hashi@kakashi:~/softhsm-2.6.1$ sudo apt install libssl-dev g++
+
+I'm using Ubuntu 22.04. Depending on the linux distro you're using...
+- You may or may not need to install these dependencies.
+- There may be a different name for these dependencies.
+- There may be a different command to install these dependencies.
+
+
+
+> Install OpenSC
+hashi@kakashi:~$ sudo apt install opensc
+
+
+
+> Download the source
+[hashi@rengoku softwares]$ wget https://dist.opendnssec.org/source/softhsm-2.6.1.tar.gz
+
+[hashi@rengoku softwares]$ ll
+total 1044
+-rw-r--r-- 1 hashi hashi 1066766 Apr 29  2020 softhsm-2.6.1.tar.gz
+
+
+
+> Extract the tarball.
+[hashi@rengoku softwares]$ tar xf softhsm-2.6.1.tar.gz
+[hashi@rengoku softwares]$ ll
+total 1048
+drwxr-xr-x 6 hashi hashi    4096 Apr 29  2020 softhsm-2.6.1
+-rw-r--r-- 1 hashi hashi 1066766 Apr 29  2020 softhsm-2.6.1.tar.gz
+[hashi@rengoku softwares]$ cd softhsm-2.6.1
+
+
+
+> Configure the makefile.
+[hashi@rengoku softwares]$ ./configure --prefix=/opt/softhsm2
+
+
+
+> Start building
+[hashi@rengoku softwares]$ make
+
+
+
+> Install the binaries.
+[hashi@rengoku softwares]$ make install
+
+
+
+
+
+SoftHSM Commands
+===================
+
+# Show version of Softhsm
+hashi@kakashi:~$ softhsm2-util -v
+2.6.1
+
+
+
+# List available slots
+hashi@kakashi:~$ softhsm2-util --show-slots
+Available slots:
+Slot 0
+    Slot info:
+        Description:      SoftHSM slot ID 0x0
+        Manufacturer ID:  SoftHSM project
+        Hardware version: 2.6
+        Firmware version: 2.6
+        Token present:    yes
+    Token info:
+        Manufacturer ID:  SoftHSM project
+        Model:            SoftHSM v2
+        Hardware version: 2.6
+        Firmware version: 2.6
+        Serial number:
+        Initialized:      no
+        User PIN init.:   no
+        Label:
+
+
+
+# Initialize a slot
+hashi@kakashi:~$ softhsm2-util --init-token --slot 0 --label Token1
+=== SO PIN (4-255 characters) ===
+Please enter SO PIN: **********
+Please reenter SO PIN: **********
+=== User PIN (4-255 characters) ===
+Please enter user PIN: **********
+Please reenter user PIN: **********
+The token has been initialized and is reassigned to slot 525803377
+
+
+
+
+OpenSC pkcs11-tool command
+============================
+
+# Display information about softhsm2 library
+hashi@kakashi:~$ pkcs11-tool --show-info --module /usr/local/softhsm2/lib/softhsm/libsofthsm2.so
+Cryptoki version 2.40
+Manufacturer     SoftHSM
+Library          Implementation of PKCS11 (ver 2.6)
+Using slot 0 with a present token (0x3f93e815)
+
+
+
+# Get the list of all slots
+hashi@kakashi:~$ pkcs11-tool --list-slots --module /usr/local/softhsm2/lib/softhsm/libsofthsm2.so
+Available slots:
+Slot 0 (0x3f93e815): SoftHSM slot ID 0x3f93e815
+  token label        : Token1
+  token manufacturer : SoftHSM project
+  token model        : SoftHSM v2
+  token flags        : login required, rng, token initialized, PIN initialized, other flags=0x20
+  hardware version   : 2.6
+  firmware version   : 2.6
+  serial num         : 5d061722bf93e815
+  pin min/max        : 4/255
+Slot 1 (0x1): SoftHSM slot ID 0x1
+  token state:   uninitialized
