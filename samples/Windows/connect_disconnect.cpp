@@ -1,5 +1,6 @@
 /*
 	This samples demonstrates the following :-
+	- This samples works on Windows operating System.
 	- How to load a softhsm pkcs#11 library.
 	- How to connect to a token using C_Initialize, C_OpenSession, and C_Login.
 	- How to disconnect from a token using C_Logout, C_CloseSession, and C_Finalize.

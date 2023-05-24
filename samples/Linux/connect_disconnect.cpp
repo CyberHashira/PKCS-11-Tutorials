@@ -1,5 +1,6 @@
 /*
 	This samples demonstrates the following :-
+	- This sample code is written for Linux,Unix and MacOS.
 	- How to load a softhsm pkcs#11 library.
 	- How to connect to a slot using C_Initialize, C_OpenSession, and C_Login.
 	- How to disconnect from a slot using C_Logout, C_CloseSession, and C_Finalize.
