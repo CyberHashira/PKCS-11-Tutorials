@@ -7,7 +7,7 @@
         > Calls C_Initialize
 		> Calls C_GetSlotInfo and pauses.
 		> When this program pauses, a user can open another terminal and create a new slot.
-		> Pressing any key continues execution of this program and C_Finalize.
+		> Pressing any key continues execution of this program and C_Finalize is called.
 	- After three loops this program quits.
 */
 

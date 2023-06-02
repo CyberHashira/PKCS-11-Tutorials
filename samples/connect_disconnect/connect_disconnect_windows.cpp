@@ -113,7 +113,6 @@ void usage(char exeName[30])
 
 int main(int argc, char **argv)
 {
-	bool logging = 0;
 	if(argc!=3) 
 		usage(argv[0]); 
 	else 
@@ -135,7 +134,7 @@ int main(int argc, char **argv)
 
 
 /*
-                                *** CAUTION ***
+                                *** DISCLAIMER ***
         - THIS CODE IS INTENDED TO BE USED FOR DEMO or TESTING PURPOSE ONLY.
         - IT DOES NOT HAVE THE PERFECT INGREDIENTS FOR YOUR COPY PASTA.
         - READ > UNDERSTAND > REVIEW > REPEAT...TILL YOU KNOW WHAT YOU'RE DOING.

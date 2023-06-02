@@ -4,6 +4,13 @@
 	- How to load a softhsm pkcs#11 library.
 	- How to connect to a token using C_Initialize, C_OpenSession, and C_Login.
 	- How to disconnect from a token using C_Logout, C_CloseSession, and C_Finalize.
+
+	Compile this code as follows :-
+
+	On Windows 
+		g++ all_platform.cpp -o all_platform -I../include
+	On Linux/Unix/MacOS
+		g++ all_platform.cpp -o all_platform -I../include -DNIX
 */
 
 
@@ -145,7 +152,6 @@ void usage(char exeName[30])
 
 int main(int argc, char **argv)
 {
-	bool logging = 0;
 	if(argc!=3) 
 		usage(argv[0]); 
 	else 
