@@ -1,18 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples demonstrates the following :-
-	- How to load a softhsm pkcs#11 library.
-	- How to connect to a token using C_Initialize, C_OpenSession, and C_Login.
-	- How to disconnect from a token using C_Logout, C_CloseSession, and C_Finalize.
-
-	Compile this code as follows :-
-	THIS SAMPLE SHOULD WORK ON WINDOWS AND UNIX/LINUX
-
-	On Windows 
-		g++ all_platform.cpp -o all_platform -I../include
-	On Linux/Unix/MacOS
-		g++ all_platform.cpp -o all_platform -I../include -DNIX
+	This samples shows how to generate an ECDSA keypair using PKCS#11 API.
 */
 
 
@@ -26,9 +15,9 @@ using namespace std;
 
 // OS Check
 #ifdef NIX
-	#include <dlfcn.h> // For Unix/Linux OS
+	#include <dlfcn.h>
 #else
-	#include <windows.h> // For Windows OS
+	#include <windows.h>
 #endif
 
 // OS Check
@@ -39,18 +28,20 @@ using namespace std;
 #endif
 
 
-CK_FUNCTION_LIST *p11Func = NULL; // Maintains the list of all obtained PKCS#11 functions.
-CK_SLOT_ID slotId; // Stores the slot ID.
-CK_SESSION_HANDLE hSession; // Stores the session handle.
-CK_BYTE *slotPin = NULL; // Stores the slot pin.
-const char *libPath = NULL; // Stores the library path.
+CK_FUNCTION_LIST *p11Func = NULL;
+CK_SLOT_ID slotId = 0;
+CK_SESSION_HANDLE hSession = 0;
+CK_BYTE *slotPin = NULL;
+const char *libPath = NULL;
+CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
+CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
 
 
 
 // This function loads a pkcs11 library. Path of the pkcs11 library is read using P11_LIB environment variable.
 void loadHSMLibrary()
 {
-	libPath = getenv("P11_LIB"); // Read P11_LIB environment variable.
+	libPath = getenv("P11_LIB");
 	if(libPath==NULL)
 	{
 		cout << "P11_LIB environment variable not set." << endl;
@@ -59,9 +50,9 @@ void loadHSMLibrary()
 
 	// OS Check	
 	#ifdef NIX
-		libHandle = dlopen(libPath, RTLD_NOW); // Load library for Unix/Linux
+		libHandle = dlopen(libPath, RTLD_NOW);
 	#else
-		libHandle = LoadLibrary(libPath); // Load Library for Windows.
+		libHandle = LoadLibrary(libPath);
 	#endif
 
 
@@ -73,20 +64,19 @@ void loadHSMLibrary()
 
 	// OS Check
 	#ifdef NIX
-		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)dlsym(libHandle,"C_GetFunctionList"); // Obtain function list on Unix/Linux OS.
+		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)dlsym(libHandle,"C_GetFunctionList");
 	#else
-		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)GetProcAddress(libHandle,"C_GetFunctionList"); // Obtain function on Windows.
+		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)GetProcAddress(libHandle,"C_GetFunctionList");
 	#endif
 
-	C_GetFunctionList(&p11Func);
 
+	C_GetFunctionList(&p11Func);
 	if(!p11Func)
 	{
 		cout << "Failed to load P11 Functions." << endl;
 		exit(1);
 	}
 }
-
 
 
 
@@ -104,18 +94,17 @@ void freeResource()
 
 
 
-
 // This function checks if a requested PKCS #11 operation was a success or a failure. 
 void checkOperation(CK_RV rv, const char *message)
 {
 	if(rv!=CKR_OK)
 	{
 		cout << message << " failed with : " << rv << endl;
+		printf("RV : 0x%08x", rv);
 		freeResource();
 		exit(1);
 	}
 }
-
 
 
 
@@ -129,7 +118,6 @@ void connectToSlot()
 
 
 
-
 // This function disconnects this sample from a slot. It first logs out of the slot, closes the session and then finalizes the library.
 void disconnectFromSlot()
 {
@@ -138,6 +126,44 @@ void disconnectFromSlot()
 	checkOperation(p11Func->C_Finalize(NULL_PTR),"C_Finalize");
 }
 
+
+
+// This function generates an ECDSA Key pair using curve secp384r1.
+void generateECDSAKeyPair()
+{
+    CK_MECHANISM mech = {CKM_ECDSA_KEY_PAIR_GEN};
+    CK_BBOOL yes = CK_TRUE;
+    CK_BBOOL no = CK_FALSE;
+    CK_UTF8CHAR pubLabel[] = "ecdsa_public";
+    CK_UTF8CHAR priLabel[] = "ecdsa_private";
+    CK_BYTE curve[] = {0x06, 0x05, 0x2b, 0x81, 0x04, 0x00, 0x22}; // secp384r1 is hex representation.
+
+    CK_ATTRIBUTE attribPub[] = 
+    {
+        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
+        {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
+        {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
+        {CKA_EC_PARAMS,		&curve,		    sizeof(curve)},
+        {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
+    };
+    CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
+
+    CK_ATTRIBUTE attribPri[] = 
+    {
+        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,           &yes,               sizeof(CK_BBOOL)},
+        {CKA_SIGN,              &yes,               sizeof(CK_BBOOL)},
+        {CKA_DECRYPT,           &yes,               sizeof(CK_BBOOL)},
+        {CKA_SENSITIVE,         &yes,               sizeof(CK_BBOOL)},
+        {CKA_LABEL,             &priLabel,          sizeof(priLabel)}
+    };
+    CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
+
+    checkOperation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");    
+    cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
+    
+}
 
 
 
@@ -166,6 +192,7 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
+    	generateECDSAKeyPair();
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();

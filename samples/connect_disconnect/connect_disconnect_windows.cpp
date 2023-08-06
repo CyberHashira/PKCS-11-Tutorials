@@ -1,3 +1,5 @@
+//Thanks for reading DISCLAIMER.txt
+
 /*
 	This samples demonstrates the following :-
 	- This samples works on Windows operating System.
@@ -21,7 +23,6 @@ CK_SLOT_ID slotId = 0;
 CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
-
 
 
 
@@ -53,7 +54,6 @@ void loadHSMLibrary()
 
 
 
-
 // Before exiting, this functions performs some memory cleanup.
 void freeResource()
 {
@@ -61,7 +61,6 @@ void freeResource()
         p11Func = NULL;
         slotPin = NULL;
 }
-
 
 
 
@@ -78,7 +77,6 @@ void checkOperation(CK_RV rv, const char *message)
 
 
 
-
 // This function connects this sample to a slot. It initializes the library, opens a new session and performs login.
 void connectToSlot()
 {
@@ -89,7 +87,6 @@ void connectToSlot()
 
 
 
-
 // This function disconnects this sample from a slot. It first logs out of the slot, closes the session and then finalizes the library.
 void disconnectFromSlot()
 {
@@ -97,7 +94,6 @@ void disconnectFromSlot()
 	checkOperation(p11Func->C_CloseSession(hSession),"C_CloseSesion");
 	checkOperation(p11Func->C_Finalize(NULL_PTR),"C_Finalize");
 }
-
 
 
 
@@ -131,12 +127,3 @@ int main(int argc, char **argv)
 	freeResource();
 	return 0;
 }
-
-
-/*
-                                *** DISCLAIMER ***
-        - THIS CODE IS INTENDED TO BE USED FOR DEMO or TESTING PURPOSE ONLY.
-        - IT DOES NOT HAVE THE PERFECT INGREDIENTS FOR YOUR COPY PASTA.
-        - READ > UNDERSTAND > REVIEW > REPEAT...TILL YOU KNOW WHAT YOU'RE DOING.
-        - WHATEVER IT IS... NOT MY PROBLEM, NOT LIABLE, NOT RESPONSIBLE !!
-*/

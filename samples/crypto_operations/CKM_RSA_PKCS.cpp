@@ -1,9 +1,9 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to generate an RSA keypair using PKCS#11 API.
+	This samples shows how to encrypt some data using CKM_RSA_PKCS mechanism.
+	Samples generates a session keypair.
 */
-
 
 
 #include <iostream>
@@ -35,6 +35,10 @@ CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
 CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
+CK_BYTE plainData[] = "Earth is the third planet of our Solar System.";
+CK_BYTE *encrypted = NULL;
+CK_BYTE *decrypted = NULL;
+CK_ULONG encLen, decLen;
 
 
 
@@ -68,7 +72,6 @@ void loadHSMLibrary()
 	#else
 		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)GetProcAddress(libHandle,"C_GetFunctionList");
 	#endif
-
 
 	C_GetFunctionList(&p11Func);
 	if(!p11Func)
@@ -145,7 +148,7 @@ void generateRsaKeyPair()
         {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
         {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
         {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_MODULUS_BITS,         &keySize,        sizeof(CK_ULONG)},
+        {CKA_MODULUS_BITS,      &keySize,        	sizeof(CK_ULONG)},
         {CKA_PUBLIC_EXPONENT,   &publicExponent,    sizeof(publicExponent)},
         {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
     };
@@ -169,6 +172,45 @@ void generateRsaKeyPair()
     
 }
 
+
+
+// Converts a byte data to hex.
+void printHex(unsigned char *data, int size)
+{
+	for(int ctr = 0; ctr<size; ctr++)
+	{
+		printf("%02x", data[ctr]);
+	}
+	cout << endl;
+}
+
+
+
+// This function encrypt data 
+void encryptData()
+{
+	CK_MECHANISM mech = {CKM_RSA_PKCS};
+	checkOperation(p11Func->C_EncryptInit(hSession, &mech, hPublic), "C_EncryptInit");
+	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, NULL, &encLen), "C_Encrypt");
+	encrypted = new CK_BYTE[encLen];
+	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, encrypted, &encLen), "C_Encrypt");
+	cout << "Encrypted data as Hex - " << endl;
+	printHex(encrypted, encLen);
+}
+
+
+
+// This functiond decrypts the encrypted data
+void decryptData()
+{
+	CK_MECHANISM mech = {CKM_RSA_PKCS};
+	checkOperation(p11Func->C_DecryptInit(hSession, &mech, hPrivate), "C_DecryptInit");
+	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, NULL, &decLen), "C_Decrypt");
+	decrypted = new CK_BYTE[decLen];
+	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, decrypted, &decLen), "C_Decrypt");
+	cout << "Decrypted data as Hex - " << endl;
+	printHex(decrypted, decLen);
+}
 
 
 // This function shows the usage of the executable.
@@ -197,6 +239,11 @@ int main(int argc, char **argv)
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
     generateRsaKeyPair();
+
+	cout << "Plain data as hex - " << endl;
+	printHex(plainData, sizeof(plainData)-1);
+	encryptData();
+	decryptData();
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();

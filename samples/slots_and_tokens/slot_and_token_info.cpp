@@ -1,3 +1,5 @@
+//Thanks for reading DISCLAIMER.txt
+
 /*
 	This samples demonstrates the following :-
 	- Loads PKCS #11 library (softhsm)
@@ -30,6 +32,7 @@ using namespace std;
 CK_FUNCTION_LIST *p11Func = NULL;
 CK_SLOT_ID *slots = NULL;
 const char *libPath;
+
 
 
 // This function loads a pkcs11 library. Path of the pkcs11 library is read using P11_LIB environment variable.
@@ -72,7 +75,6 @@ void loadHSMLibrary()
 
 
 
-
 // Before exiting, this functions performs some memory cleanup.
 void freeResource()
 {
@@ -85,7 +87,6 @@ void freeResource()
         p11Func = NULL;
 	slots = NULL;
 }
-
 
 
 
@@ -188,14 +189,3 @@ int main(int argc, char **argv)
 	freeResource();
 	return 0;
 }
-
-
-
-/*
-                                *** DISCLAIMER ***
-        - THIS CODE IS INTENDED TO BE USED FOR DEMO or TESTING PURPOSE ONLY.
-        - IT DOES NOT HAVE THE PERFECT INGREDIENTS FOR YOUR COPY PASTA.
-        - READ > UNDERSTAND > REVIEW > REPEAT...TILL YOU KNOW WHAT YOU'RE DOING.
-        - WHATEVER IT IS... NOT MY PROBLEM, NOT LIABLE, NOT RESPONSIBLE !!
-*/
-

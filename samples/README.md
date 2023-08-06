@@ -3,7 +3,7 @@
 
 These are some pkcs#11 samples that I've provided for viewers on YouTube. These sample codes were tested on SoftHSM2.
 
-	* * Last Update : July-24-2023 * *
+	* * Last Update : Aug-05-2023 * *
 
 
 
@@ -32,3 +32,8 @@ Table of Contents
 	- generate_aes_key.cpp.................: shows how to generate AES key using PKCS#11 API.
 	- generate_des3_key.cpp................: shows how to generate DES3 key using PKCS #11 API.
 	- generate_rsa_keypair.cpp.............: shows how to generare RSA keypair using PKCS#11 API.
+	- generate_ecdsa_keypair.cpp...........: shows how to generate ECDSA keypair using PKCS#11 API.
+
+4. crypto_operations
+	- CKM_AES_CBC_PAD.cpp..................: shows how to encrypt some data using CKM_AES_CBC_PAD mechanism.
+	- CKM_RSA_PKCS.cpp.....................: shows how to encrypt some data using CKM_RSA_PKCS mechanism.

@@ -1,9 +1,9 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to generate DES3 key using PKCS#11 API.
+	This samples shows how to encrypts a plaintext and decrypts it using AES-256 key.
+	AES key used for encryption is generated as session object.
 */
-
 
 
 #include <iostream>
@@ -34,6 +34,12 @@ CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE objHandle = 0;
+CK_BYTE IV[] = "1234567812345678";
+unsigned char plainData[] = "Earth is the third planet of our Solar System.";
+CK_BYTE *encryptedData = NULL;
+CK_BYTE *decryptedData = NULL;
+CK_ULONG encLen;
+CK_ULONG decLen;
 
 
 
@@ -92,14 +98,23 @@ void freeResource()
 }
 
 
+// Converts byte array to Hex String.
+void printHex(CK_BYTE *bytes, int len)
+{
+	for(int ctr=0; ctr<len; ctr++)
+	{
+		printf("%02x", bytes[ctr]);
+	}
+	cout << endl;
+}
 
 // This function checks if a requested PKCS #11 operation was a success or a failure. 
 void checkOperation(CK_RV rv, const char *message)
 {
 	if(rv!=CKR_OK)
 	{
-		cout << message << " failed with : " << rv;
-		printf(" | 0x%08x\n", rv);
+		cout << message << " failed with : " << rv << endl;
+		printf("RV : 0x%08x", rv);
 		freeResource();
 		exit(1);
 	}
@@ -127,32 +142,59 @@ void disconnectFromSlot()
 
 
 
-// This function generates a DES-3 Key with the following properties.
-// token object|sensitive|read-only|non-extractable|can encrypt and decrypt|private object
-void generateDes3Key()
+// This function generates an AES-256 Key.
+void generateAesKey()
 {
-    CK_MECHANISM mech = {CKM_DES3_KEY_GEN};
+    CK_MECHANISM mech = {CKM_AES_KEY_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
-    CK_UTF8CHAR label[] = "Test";
+    CK_UTF8CHAR label[] = "aes_key";
+	CK_ULONG keySize = 32;
 
     CK_ATTRIBUTE attrib[] = 
     {
-        {CKA_TOKEN,         &yes,       sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,       &yes,       sizeof(CK_BBOOL)},
-        {CKA_SENSITIVE,     &yes,       sizeof(CK_BBOOL)},
-        {CKA_EXTRACTABLE,   &no,        sizeof(CK_BBOOL)},
-        {CKA_MODIFIABLE,    &no,        sizeof(CK_BBOOL)},
-        {CKA_ENCRYPT,       &yes,       sizeof(CK_BBOOL)},
-        {CKA_DECRYPT,      &label,       sizeof(CK_BBOOL)},
-        {CKA_LABEL,         &label,     sizeof(label)}
+        {CKA_TOKEN,         	&no,        	sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,       	&yes,       	sizeof(CK_BBOOL)},
+        {CKA_SENSITIVE,     	&yes,       	sizeof(CK_BBOOL)},
+        {CKA_EXTRACTABLE,   	&no,        	sizeof(CK_BBOOL)},
+        {CKA_MODIFIABLE,    	&no,        	sizeof(CK_BBOOL)},
+        {CKA_ENCRYPT,       	&yes,       	sizeof(CK_BBOOL)},
+        {CKA_DECRYPT,       	&yes,       	sizeof(CK_BBOOL)},
+        {CKA_VALUE_LEN,			&keySize,		sizeof(CK_ULONG)}
     };
-	
     CK_ULONG attribLen = sizeof(attrib) / sizeof(*attrib);
 
     checkOperation(p11Func->C_GenerateKey(hSession, &mech, attrib, attribLen, &objHandle), "C_GenerateKey");
 
-    cout << "DES-3 Key generated as handle : " << objHandle << endl;
+    cout << "AES-256 Key generated as handle : " << objHandle << endl;
+}
+
+
+
+// This function Encrypts data using CKM_AES_CBC_PAD
+void encryptData()
+{
+	CK_MECHANISM mech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
+	checkOperation(p11Func->C_EncryptInit(hSession, &mech, objHandle), "C_EncryptInit");
+	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, NULL, &encLen), "C_Encrypt");
+	encryptedData = new unsigned char[encLen];
+	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, encryptedData, &encLen), "C_Encrypt");
+	cout << "Encrypted Data - " << endl;
+	printHex(encryptedData, encLen);
+}
+
+
+
+// This function Decrypts data using CKM_AES_CBC_PAD
+void decryptData()
+{
+	CK_MECHANISM mech = {CKM_AES_CBC_PAD, IV, sizeof(IV)-1};
+	checkOperation(p11Func->C_DecryptInit(hSession, &mech, objHandle), "C_DecryptInit");
+	checkOperation(p11Func->C_Decrypt(hSession, encryptedData, encLen, NULL, &decLen), "C_Decrypt");
+	decryptedData = new unsigned char[decLen];
+	checkOperation(p11Func->C_Decrypt(hSession, encryptedData, encLen, decryptedData, &decLen), "C_Decrypt");
+	cout << "Decrypted data -" << endl;
+	printHex(decryptedData, decLen);
 }
 
 
@@ -182,7 +224,15 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-    generateDes3Key();
+    generateAesKey();
+
+	cout << endl << "Plaindata as Hex -" << endl;
+	printHex(plainData, sizeof(plainData)-1);
+	
+	encryptData();
+
+	decryptData();
+	
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();

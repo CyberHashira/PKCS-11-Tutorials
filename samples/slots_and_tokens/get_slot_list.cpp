@@ -1,3 +1,5 @@
+//Thanks for reading DISCLAIMER.txt
+
 /*
         This program demonstrates how to use C_GetSlotList to get the list of all detected slots.
 */
@@ -69,7 +71,6 @@ void loadHSMLibrary()
 
 
 
-
 // Before exiting, this functions performs some memory cleanup.
 void freeResource()
 {
@@ -82,7 +83,6 @@ void freeResource()
         p11Func = NULL;
 	slots = NULL;
 }
-
 
 
 
@@ -132,13 +132,3 @@ int main(int argc, char **argv)
 	freeResource();
 	return 0;
 }
-
-
-
-/*
-                                *** DISCLAIMER ***
-        - THIS CODE IS INTENDED TO BE USED FOR DEMO or TESTING PURPOSE ONLY.
-        - IT DOES NOT HAVE THE PERFECT INGREDIENTS FOR YOUR COPY PASTA.
-        - READ > UNDERSTAND > REVIEW > REPEAT...TILL YOU KNOW WHAT YOU'RE DOING.
-        - WHATEVER IT IS... NOT MY PROBLEM, NOT LIABLE, NOT RESPONSIBLE !!
-*/
