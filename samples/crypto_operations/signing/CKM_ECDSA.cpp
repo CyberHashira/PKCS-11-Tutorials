@@ -1,9 +1,10 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to generate DES3 key using PKCS#11 API.
+	This samples shows how to sign some data using CKM_ECDSA mechanism.
+	- Samples generates a session keypair.
+	- This sample will Sign and Verify some data.
 */
-
 
 
 #include <iostream>
@@ -33,8 +34,11 @@ CK_SLOT_ID slotId = 0;
 CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
-CK_OBJECT_HANDLE objHandle = 0;
-
+CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
+CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
+CK_BYTE plainData[] = "Earth is the third planet of our Solar System.";
+CK_BYTE *signature = NULL;
+CK_ULONG sigLen = 0;
 
 
 // This function loads a pkcs11 library. Path of the pkcs11 library is read using P11_LIB environment variable.
@@ -68,7 +72,6 @@ void loadHSMLibrary()
 		CK_C_GetFunctionList C_GetFunctionList = (CK_C_GetFunctionList)GetProcAddress(libHandle,"C_GetFunctionList");
 	#endif
 
-
 	C_GetFunctionList(&p11Func);
 	if(!p11Func)
 	{
@@ -98,8 +101,8 @@ void checkOperation(CK_RV rv, const char *message)
 {
 	if(rv!=CKR_OK)
 	{
-		cout << message << " failed with : " << rv;
-		printf(" | 0x%08x\n", rv);
+		cout << message << " failed with : " << rv << endl;
+		printf("RV : 0x%08x", rv);
 		freeResource();
 		exit(1);
 	}
@@ -127,34 +130,76 @@ void disconnectFromSlot()
 
 
 
-// This function generates a DES-3 Key with the following properties.
-// token object|sensitive|read-only|non-extractable|can encrypt and decrypt|private object
-void generateDes3Key()
+// This function generates an ECDSA Key pair.
+void generateECDSAKeyPair()
 {
-    CK_MECHANISM mech = {CKM_DES3_KEY_GEN};
+    CK_MECHANISM mech = {CKM_EC_KEY_PAIR_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
-    CK_UTF8CHAR label[] = "Test";
-
-    CK_ATTRIBUTE attrib[] = 
+    CK_BYTE curve[] = {0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07}; // secp384r1 is hex representation.
+    
+    CK_ATTRIBUTE attribPub[] = 
     {
-        {CKA_TOKEN,         &yes,       sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,       &yes,       sizeof(CK_BBOOL)},
-        {CKA_SENSITIVE,     &yes,       sizeof(CK_BBOOL)},
-        {CKA_EXTRACTABLE,   &no,        sizeof(CK_BBOOL)},
-        {CKA_MODIFIABLE,    &no,        sizeof(CK_BBOOL)},
-        {CKA_ENCRYPT,       &yes,       sizeof(CK_BBOOL)},
-        {CKA_DECRYPT,      &label,       sizeof(CK_BBOOL)},
-        {CKA_LABEL,         &label,     sizeof(label)}
+        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
+        {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
+        {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
+		{CKA_EC_PARAMS,			&curve,				sizeof(curve)}
     };
-	
-    CK_ULONG attribLen = sizeof(attrib) / sizeof(*attrib);
+    CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
 
-    checkOperation(p11Func->C_GenerateKey(hSession, &mech, attrib, attribLen, &objHandle), "C_GenerateKey");
 
-    cout << "DES-3 Key generated as handle : " << objHandle << endl;
+    CK_ATTRIBUTE attribPri[] = 
+    {
+        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,           &yes,               sizeof(CK_BBOOL)},
+        {CKA_SIGN,              &yes,               sizeof(CK_BBOOL)},
+        {CKA_DECRYPT,           &yes,               sizeof(CK_BBOOL)},
+        {CKA_SENSITIVE,         &yes,               sizeof(CK_BBOOL)}
+    };
+    CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
+
+    checkOperation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");
+    
+    cout << "ECDSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
 }
 
+
+
+// Converts a byte data to hex.
+void printHex(unsigned char *data, int size)
+{
+	for(int ctr = 0; ctr<size; ctr++)
+	{
+		printf("%02x", data[ctr]);
+	}
+	cout << endl;
+}
+
+
+
+// This function signs the plain data using CKM_ECDSA
+void signData()
+{
+	CK_MECHANISM mech = {CKM_ECDSA};
+	checkOperation(p11Func->C_SignInit(hSession, &mech, hPrivate), "C_SignInit");
+	checkOperation(p11Func->C_Sign(hSession, plainData, sizeof(plainData)-1, NULL, &sigLen), "C_Sign");
+	signature = new CK_BYTE[sigLen];
+	checkOperation(p11Func->C_Sign(hSession, plainData, sizeof(plainData)-1, signature, &sigLen), "C_Sign");
+	cout << "Plaindata signed - " << endl;
+	printHex(signature, sigLen);
+}
+
+
+
+// This function verifies the signed data.
+void verifyData()
+{
+	CK_MECHANISM mech = {CKM_ECDSA};
+	checkOperation(p11Func->C_VerifyInit(hSession, &mech, hPublic), "C_VerifyInit");
+	checkOperation(p11Func->C_Verify(hSession, plainData, sizeof(plainData)-1, signature, sigLen), "C_Verify");
+	cout << "Signed data verified." << endl;
+}
 
 
 // This function shows the usage of the executable.
@@ -182,7 +227,12 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-    generateDes3Key();
+    generateECDSAKeyPair();
+
+	cout << "Plain data as hex - " << endl;
+	printHex(plainData, sizeof(plainData)-1);
+	signData();
+	verifyData();
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();

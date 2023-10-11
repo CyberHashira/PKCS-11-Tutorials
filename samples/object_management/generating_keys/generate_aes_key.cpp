@@ -1,9 +1,8 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to generate an RSA keypair using PKCS#11 API.
+	This samples shows how to generate an AES key using PKCS#11 API.
 */
-
 
 
 #include <iostream>
@@ -33,8 +32,7 @@ CK_SLOT_ID slotId = 0;
 CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
-CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
-CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
+CK_OBJECT_HANDLE objHandle = 0;
 
 
 
@@ -44,7 +42,13 @@ void loadHSMLibrary()
 	libPath = getenv("P11_LIB");
 	if(libPath==NULL)
 	{
-		cout << "P11_LIB environment variable not set." << endl;
+                cout << "P11_LIB environment variable not set." << endl;
+                cout << "Set P11_LIB environment variable to pkcs11 library to the pkcs11 library to use." << endl << endl;
+                cout << "Example :-" << endl;
+                cout << "For Unix/Linux -" << endl;
+                cout << "export P11_LIB=/opt/softhsm2/lib/softhsm/libsofthsm2.so" << endl;
+                cout << "For Windows -" << endl;
+                cout << "set P11_LIB=C:\\SoftHSM2\\lib\\softhsm2.dll" << endl;
 		exit(1);
 	}
 
@@ -128,45 +132,34 @@ void disconnectFromSlot()
 
 
 
-// This function generates an RSA 2048 bit Key pair.
-void generateRsaKeyPair()
+// This function generates an AES-256 Key.
+// Token Object | Private | Sensitive | Extractable | Modifiable | Can encrypt and decrypt 
+void generateAesKey()
 {
-    CK_MECHANISM mech = {CKM_RSA_PKCS_KEY_PAIR_GEN};
+    CK_MECHANISM mech = {CKM_AES_KEY_GEN};
     CK_BBOOL yes = CK_TRUE;
     CK_BBOOL no = CK_FALSE;
-    CK_ULONG keySize = 2048;
-    CK_BYTE publicExponent[] = {0x01, 0x00, 0x00, 0x00, 0x01};
-    CK_UTF8CHAR pubLabel[] = "rsa_public";
-    CK_UTF8CHAR priLabel[] = "rsa_private";
+    CK_UTF8CHAR label[] = "aes_key";
+    CK_ULONG keySize = 32;
 
-    CK_ATTRIBUTE attribPub[] = 
+    CK_ATTRIBUTE attrib[] = 
     {
-        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,           &no,                sizeof(CK_BBOOL)},
-        {CKA_VERIFY,            &yes,               sizeof(CK_BBOOL)},
-        {CKA_ENCRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_MODULUS_BITS,         &keySize,        sizeof(CK_ULONG)},
-        {CKA_PUBLIC_EXPONENT,   &publicExponent,    sizeof(publicExponent)},
-        {CKA_LABEL,             &pubLabel,          sizeof(pubLabel)}
+        {CKA_TOKEN,         &yes,       sizeof(CK_BBOOL)},
+        {CKA_PRIVATE,       &yes,       sizeof(CK_BBOOL)},
+        {CKA_SENSITIVE,     &yes,       sizeof(CK_BBOOL)},
+        {CKA_EXTRACTABLE,   &yes,       sizeof(CK_BBOOL)},
+        {CKA_MODIFIABLE,    &yes,       sizeof(CK_BBOOL)},
+        {CKA_ENCRYPT,       &yes,       sizeof(CK_BBOOL)},
+        {CKA_DECRYPT,       &yes,       sizeof(CK_BBOOL)},
+        {CKA_LABEL,         &label,     sizeof(label)},
+	{CKA_VALUE_LEN,	    &keySize,	sizeof(CK_ULONG)}
     };
-    CK_ULONG attribLenPub = sizeof(attribPub) / sizeof(*attribPub);
 
+    CK_ULONG attribLen = sizeof(attrib) / sizeof(*attrib);
 
-    CK_ATTRIBUTE attribPri[] = 
-    {
-        {CKA_TOKEN,             &no,                sizeof(CK_BBOOL)},
-        {CKA_PRIVATE,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_SIGN,              &yes,               sizeof(CK_BBOOL)},
-        {CKA_DECRYPT,           &yes,               sizeof(CK_BBOOL)},
-        {CKA_SENSITIVE,         &yes,               sizeof(CK_BBOOL)},
-        {CKA_LABEL,             &priLabel,          sizeof(priLabel)}
-    };
-    CK_ULONG attribLenPri = sizeof(attribPri) / sizeof(*attribPri);
+    checkOperation(p11Func->C_GenerateKey(hSession, &mech, attrib, attribLen, &objHandle), "C_GenerateKey");
 
-    checkOperation(p11Func->C_GenerateKeyPair(hSession, &mech, attribPub, attribLenPub, attribPri, attribLenPri, &hPublic, &hPrivate), "C_GenerateKeyPair");
-    
-    cout << "RSA keypair generated as handle #" << hPublic << " for public key and handle #" << hPrivate << " for a private key." << endl;
-    
+    cout << "AES-256 Key generated as handle : " << objHandle << endl;
 }
 
 
@@ -196,7 +189,7 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-    generateRsaKeyPair();
+	generateAesKey();
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();
