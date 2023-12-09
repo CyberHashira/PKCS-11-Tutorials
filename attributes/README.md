@@ -12,7 +12,7 @@ ATTRIBUTES -
 ----------
 
 | ATTRIBUTES     | Description | Data type |
-|:---------------|-------------|-----------|
+|:---------------|-------------|----------:|
 | CKA_CLASS             | Class of an object. For e.g. CKO_SECRET_KEY, CKO_PRIVATE_KEY, CKO_PUBLIC_KEY | CK_OBJECT_CLASS |
 | CKA_TOKEN             | Session object or Token Object | CK_BBOOL |
 | CKA_PRIVATE           | Authentication required for accessing an object | CK_BBOOL |
