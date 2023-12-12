@@ -3,7 +3,7 @@
 
 This is a list of common return codes in PKCS#11. The success, failure and status of a PKCS#11 return code can be determined using these return codes.
 
-	* * Last Update : Dec-08-2023 * *
+	* * Last Update : Dec-11-2023 * *
 
 
 
@@ -26,18 +26,27 @@ RETURN CODES -
 | CKR_FUNCTION_NOT_SUPPORTED    | 0x00000054 | An attempt was made to execute an unsupported function |
 | CKR_KEY_HANDLE_INVALID        | 0x00000060 | Handle number of a key is invalid |
 | CKR_KEY_SIZE_RANGE            | 0x00000062 | Length of a key in not in the allowed range |
-| CKR_KEY_TYPE_INCONSISTENT     | 
-| CKR_KEY_NOT_WRAPPABLE
-| CKR_KEY_UNEXTRACTABLE
-| CKR_MECHANISM_INVALID
-+ CKR_MECHANISM_PARAM_INVALID
-+ CKR_OBJECT_HANDLE_INVALID
-+ CKR_PIN_INCORRECT
-+ CKR_PIN_EXPIRED
-+ CKR_PIN_LOCKED
-+ CKR_SESSION_HANDLE_INVALID
-+ CKR_SIGNATURE_INVALID
-+ CKR_SIGNATURE_LEN_RANGE
-+ CKR_TEMPLATE_INCOMPLETE
-+ CKR_TEMPLATE_INCONSISTENT
-+ CKR_TOKEN_NOT_PRESENT
+| CKR_KEY_TYPE_INCONSISTENT     | 0x00000063 | Incorrect type of key used for a mechanism |
+| CKR_KEY_NOT_WRAPPABLE         | 0x00000069 | Token does not allow a certain type of key to be wrapped |
+| CKR_KEY_UNEXTRACTABLE         | 0x0000006A | Key has CKA_EXTRACTABLE set as CK_FALSE |
+| CKR_MECHANISM_INVALID         | 0x00000070 | An attempt was made to use a disallowed/unsupported/invalid mechanism |
+| CKR_MECHANISM_PARAM_INVALID   | 0x00000071 | Parameter passed for a mechanism is invalid. | 
+| CKR_OBJECT_HANDLE_INVALID     | 0x00000082 | Handle number of an object is invalid. |
+| CKR_PIN_INCORRECT             | 0x000000A0 | Incorrect pin was used for C_Login |
+| CKR_PIN_EXPIRED               | 0x000000A3 | Expired pin was used for C_Login |
+| CKR_PIN_LOCKED                | 0x000000A4 | Pin locked due to multiple failed attempts |
+| CKR_SESSION_HANDLE_INVALID    | 0x000000B3 | Session handle being used does not exist |
+| CKR_SIGNATURE_INVALID         | 0x000000C0 | Signature verification failed. |
+| CKR_SIGNATURE_LEN_RANGE       | 0x000000C1 | Length of the signature is invalid |
+| CKR_TEMPLATE_INCOMPLETE       | 0x000000D0 | Incomplete information in an attribute template |
+| CKR_TEMPLATE_INCONSISTENT     | 0x000000D1 | Incorrect information in an attribute template |
+| CKR_TOKEN_NOT_PRESENT         | 0x000000E0 | Referenced slot does not have a token present in it. |
+| CKR_USER_ALREADY_LOGGED_IN 	| 0x00000100 | A user is already logged into a token |
+| CKR_USER_NOT_LOGGED_IN        | 0x00000101 | A user is required to be logged in. |
+| CKR_USER_PIN_NOT_INITIALIZED  | 0x00000102 | Normal user is not initialized. |
+| CKR_USER_TYPE_INVALID         | 0x00000103 | Type of user not valid for a token |
+| CKR_RANDOM_SEED_NOT_SUPPORTED | 0x00000120 | Seeding a PRNG is not supported for the token |
+| CKR_RANDOM_NO_RNG			    | 0x00000121 | No PRNG available to generate random data |
+| CKR_CRYPTOKI_NOT_INITIALIZED 	| 0x00000190 | C_Initialized not called. |
+| CKR_CRYPTOKI_ALREADY_INITIALIZED | 0x00000191 | C_Initialized called more than once |
+| CKR_VENDOR_DEFINED 			| 0x80000000 | Error code reserved for a vendor to use. |
