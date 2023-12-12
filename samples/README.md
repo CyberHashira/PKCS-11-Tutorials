@@ -46,3 +46,6 @@ Table of Contents
 		- CKM_ECDSA.cpp...................: shows how to sign some data using CKM_ECDSA.
 		- CKM_RSA_PKCS.cpp................: shows how to sign some data using CKM_RSA_PKCS.
 		- CKM_SHA256_RSA_PKCS.cpp.........: shows how to sign some data using CKM_SHA256_RSA_PKCS.cpp
+	- MISCELLANEOUS
+		- C_GenerateRandom.cpp............: shows how to generate random data using C_GenerateRandom.
+		- C_SeedRandom.cpp................: shows how to seed PRNG.
