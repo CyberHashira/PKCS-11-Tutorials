@@ -3,7 +3,7 @@
 
 These are some pkcs#11 samples that I've provided for viewers on YouTube. These sample codes were tested on SoftHSM2.
 
-	* * Last Update : Oct-11-2023 * *
+	* * Last Update : Dec-11-2023 * *
 
 
 
@@ -29,7 +29,7 @@ Table of Contents
 
 3. object_management	: contains sample codes that shows how to generate, modify, find, and delete objects.
 
-	> GENERATING-KEYS
+	- GENERATING-KEYS
 		- createobject_data.cpp		  : shows how to create a data object using PKCS#11 API.
 		- generate_aes_key.cpp............: shows how to generate AES key using PKCS#11 API.
 		- generate_des3_key.cpp...........: shows how to generate DES3 key using PKCS #11 API.
@@ -38,11 +38,11 @@ Table of Contents
 
 4. crypto_operations	: contains sample codes that shows how to perform cryptographic operations such as encryption, signing etc.
 
-	> ENCRYPTION -
+	- ENCRYPTION
 		- CKM_AES_CBC_PAD.cpp.............: shows how to encrypt some data using CKM_AES_CBC_PAD mechanism.
 		- CKM_RSA_PKCS.cpp................: shows how to encrypt some data using CKM_RSA_PKCS mechanism.
 		- CKM_RSA_PKCS_OAEP.cpp...........: shows how to encrypt some data using CKM_RSA_PKCS_OAEP mechanism.
-	> SIGNING
+	- SIGNING
 		- CKM_ECDSA.cpp...................: shows how to sign some data using CKM_ECDSA.
 		- CKM_RSA_PKCS.cpp................: shows how to sign some data using CKM_RSA_PKCS.
 		- CKM_SHA256_RSA_PKCS.cpp.........: shows how to sign some data using CKM_SHA256_RSA_PKCS.cpp
