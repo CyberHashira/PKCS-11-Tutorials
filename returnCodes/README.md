@@ -3,7 +3,7 @@
 
 This is a list of common return codes in PKCS#11. The success, failure and status of a PKCS#11 return code can be determined using these return codes.
 
-	* * Last Update : Dec-11-2023 * *
+	* * Last Update : Jan-26-2024 * *
 
 
 
@@ -32,6 +32,7 @@ RETURN CODES -
 | CKR_MECHANISM_INVALID         | 0x00000070 | An attempt was made to use a disallowed/unsupported/invalid mechanism |
 | CKR_MECHANISM_PARAM_INVALID   | 0x00000071 | Parameter passed for a mechanism is invalid. | 
 | CKR_OBJECT_HANDLE_INVALID     | 0x00000082 | Handle number of an object is invalid. |
+| CKR_OPERATION_NOT_INITIALED	| 0x00000091 | Requested cryptographic operation is not initialized. |
 | CKR_PIN_INCORRECT             | 0x000000A0 | Incorrect pin was used for C_Login |
 | CKR_PIN_EXPIRED               | 0x000000A3 | Expired pin was used for C_Login |
 | CKR_PIN_LOCKED                | 0x000000A4 | Pin locked due to multiple failed attempts |
