@@ -23,6 +23,7 @@ RETURN CODES -
 | CKR_DATA_LEN_RANGE            | 0x00000021 | Data passed into a function exceeds a valid range |
 | CKR_DEVICE_ERROR              | 0x00000030 | A token could not process a requested operation due to some failure |
 | CKR_DEVICE_MEMORY             | 0x00000031 | A token is out of memory |
+| CKR_FUNCTION_CANCELED         | 0x00000050 | An active function was cancelled mid operation. |
 | CKR_FUNCTION_NOT_SUPPORTED    | 0x00000054 | An attempt was made to execute an unsupported function |
 | CKR_KEY_HANDLE_INVALID        | 0x00000060 | Handle number of a key is invalid |
 | CKR_KEY_SIZE_RANGE            | 0x00000062 | Length of a key in not in the allowed range |
