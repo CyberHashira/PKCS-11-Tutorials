@@ -143,7 +143,7 @@ void disconnectFromSlot()
 
 
 // This function generates an DES3 Key.
-void generateAesKey()
+void generateDES3Key()
 {
     CK_MECHANISM mech = {CKM_DES3_KEY_GEN};
     CK_BBOOL yes = CK_TRUE;
@@ -222,8 +222,7 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-	generateAesKey();
-
+	generateDES3Key();
 	cout << endl << "Plaindata as Hex -" << endl;
 	printHex(plainData, sizeof(plainData)-1);
 	
