@@ -102,11 +102,7 @@ void checkOperation(CK_RV rv, const char *message)
 	if(rv!=CKR_OK)
 	{
 		cout << message << " failed with : " << rv << endl;
-<<<<<<< HEAD
-		printf("RV : 0x%08x", rv);
-=======
 		printf("RV : %#08lx", rv);
->>>>>>> 8b0a8ad (Minors changes + new samples)
 		freeResource();
 		exit(1);
 	}
@@ -238,8 +234,7 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-    generateRsaKeyPair();
-
+    	generateRsaKeyPair();
 	cout << "Plain data as hex - " << endl;
 	printHex(plainData, sizeof(plainData)-1);
 	signData();

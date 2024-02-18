@@ -23,6 +23,8 @@ RETURN CODES -
 | CKR_DATA_LEN_RANGE            | 0x00000021 | Data passed into a function exceeds a valid range |
 | CKR_DEVICE_ERROR              | 0x00000030 | A token could not process a requested operation due to some failure |
 | CKR_DEVICE_MEMORY             | 0x00000031 | A token is out of memory |
+| CKR_ENCRYPTED_DATA_INVALID	| 0x00000040 | Specified ciphertext is not valid for decrypt operation |
+| CKR_ENCRYPTED_DATA_LEN_RANGE	| 0x00000041 | Length of the cipher text is not valid for a specified decrypt operation |
 | CKR_FUNCTION_CANCELED         | 0x00000050 | An active function was cancelled mid operation. |
 | CKR_FUNCTION_NOT_SUPPORTED    | 0x00000054 | An attempt was made to execute an unsupported function |
 | CKR_KEY_HANDLE_INVALID        | 0x00000060 | Handle number of a key is invalid |
@@ -40,6 +42,7 @@ RETURN CODES -
 | CKR_SESSION_HANDLE_INVALID    | 0x000000B3 | Session handle being used does not exist |
 | CKR_SIGNATURE_INVALID         | 0x000000C0 | Signature verification failed. |
 | CKR_SIGNATURE_LEN_RANGE       | 0x000000C1 | Length of the signature is invalid |
+| CKR_OPERATION_NOT_INITIALIZED	| 0x00000091 | Requested cryptographic operation is not initialized. |
 | CKR_TEMPLATE_INCOMPLETE       | 0x000000D0 | Incomplete information in an attribute template |
 | CKR_TEMPLATE_INCONSISTENT     | 0x000000D1 | Incorrect information in an attribute template |
 | CKR_TOKEN_NOT_PRESENT         | 0x000000E0 | Referenced slot does not have a token present in it. |
