@@ -36,7 +36,7 @@ CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
 CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
-CK_BYTE plainData[] = "d48341d0b962a71a2472792b3e6abf11d41ed5db";
+CK_BYTE plainData[] = "Mars is the fourth planet of our Solar System.";
 CK_BYTE *signature = NULL;
 CK_ULONG sigLen = 0;
 CK_RSA_PKCS_PSS_PARAMS pssParam;
