@@ -1,8 +1,9 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to encrypt some data using CKM_RSA_PKCS mechanism.
-	Samples generates a session keypair.
+	This samples shows how to sign some data using CKM_SHA1_RSA_PKCS_PSS mechanism.
+	- Samples generates a session keypair.
+	- This sample will Sign and Verify some data.
 */
 
 
@@ -35,12 +36,10 @@ CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
 CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
-CK_BYTE plainData[] = "Earth is the third planet of our Solar System.";
-CK_BYTE *encrypted = NULL;
-CK_BYTE *decrypted = NULL;
-CK_ULONG encLen, decLen;
-
-
+CK_BYTE plainData[] = "d48341d0b962a71a2472792b3e6abf11d41ed5db";
+CK_BYTE *signature = NULL;
+CK_ULONG sigLen = 0;
+CK_RSA_PKCS_PSS_PARAMS pssParam;
 
 // This function loads a pkcs11 library. Path of the pkcs11 library is read using P11_LIB environment variable.
 void loadHSMLibrary()
@@ -185,31 +184,37 @@ void printHex(unsigned char *data, int size)
 }
 
 
-
-// This function encrypt data 
-void encryptData()
+void initPSSParam()
 {
-	CK_MECHANISM mech = {CKM_RSA_PKCS};
-	checkOperation(p11Func->C_EncryptInit(hSession, &mech, hPublic), "C_EncryptInit");
-	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, NULL, &encLen), "C_Encrypt");
-	encrypted = new CK_BYTE[encLen];
-	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, encrypted, &encLen), "C_Encrypt");
-	cout << "Encrypted data as Hex - " << endl;
-	printHex(encrypted, encLen);
+	pssParam.hashAlg = CKM_SHA_1;
+	pssParam.mgf = CKG_MGF1_SHA1;
+	pssParam.sLen = sizeof(plainData)-1;
+}
+
+
+
+// This function signs the plain data 
+void signData()
+{
+	initPSSParam();
+	CK_MECHANISM mech = {CKM_SHA1_RSA_PKCS_PSS, &pssParam, sizeof(pssParam)};
+	checkOperation(p11Func->C_SignInit(hSession, &mech, hPrivate), "C_SignInit");
+	checkOperation(p11Func->C_Sign(hSession, plainData, sizeof(plainData)-1, NULL, &sigLen), "C_Sign");
+	signature = new CK_BYTE[sigLen];
+	checkOperation(p11Func->C_Sign(hSession, plainData, sizeof(plainData)-1, signature, &sigLen), "C_Sign");
+	cout << "Plaindata signed - " << endl;
+	printHex(signature, sigLen);
 }
 
 
 
 // This functiond decrypts the encrypted data
-void decryptData()
+void verifyData()
 {
-	CK_MECHANISM mech = {CKM_RSA_PKCS};
-	checkOperation(p11Func->C_DecryptInit(hSession, &mech, hPrivate), "C_DecryptInit");
-	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, NULL, &decLen), "C_Decrypt");
-	decrypted = new CK_BYTE[decLen];
-	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, decrypted, &decLen), "C_Decrypt");
-	cout << "Decrypted data as Hex - " << endl;
-	printHex(decrypted, decLen);
+	CK_MECHANISM mech = {CKM_SHA1_RSA_PKCS_PSS, &pssParam, sizeof(pssParam)};
+	checkOperation(p11Func->C_VerifyInit(hSession, &mech, hPublic), "C_VerifyInit");
+	checkOperation(p11Func->C_Verify(hSession, plainData, sizeof(plainData)-1, signature, sigLen), "C_Verify");
+	cout << "Signed data verified." << endl;
 }
 
 
@@ -238,12 +243,12 @@ int main(int argc, char **argv)
 	cout << "P11 library loaded." << endl;
 	connectToSlot();
 	cout << "Connected via session : " << hSession << endl;
-	generateRsaKeyPair();
+        generateRsaKeyPair();
 
 	cout << "Plain data as hex - " << endl;
 	printHex(plainData, sizeof(plainData)-1);
-	encryptData();
-	decryptData();
+	signData();
+	verifyData();
 	disconnectFromSlot();
 	cout << "Disconnected from slot." << endl;
 	freeResource();
