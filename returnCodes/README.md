@@ -3,7 +3,7 @@
 
 This is a list of common return codes in PKCS#11. The success, failure and status of a PKCS#11 return code can be determined using these return codes.
 
-	* * Last Update : Jan-26-2024 * *
+	* * Last Update : Apr-19-2024 * *
 
 
 
