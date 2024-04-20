@@ -19,7 +19,8 @@ RETURN CODES -
 | CKR_ATTRIBUTE_SENSITIVE   	| 0x00000011 | An attempt was made to read a sensitive attribute | 
 | CKR_ATTRIBUTE_TYPE_INVALID    | 0x00000012 | Attribute for an object is invalid |
 | CKR_ATTRIBUTE_VALUE_INVALID   | 0x00000013 | Value of an attribute is invalid |
-| CKR_DATA_INVALID				| 0x00000020 | Invalid data passed into a function |           
+| CKR_BUFFER_TOO_SMALL		| 0x00000150 | The output of the function is too large to fit in the supplied buffer. |
+| CKR_DATA_INVALID		| 0x00000020 | Invalid data passed into a function |           
 | CKR_DATA_LEN_RANGE            | 0x00000021 | Data passed into a function exceeds a valid range |
 | CKR_DEVICE_ERROR              | 0x00000030 | A token could not process a requested operation due to some failure |
 | CKR_DEVICE_MEMORY             | 0x00000031 | A token is out of memory |
