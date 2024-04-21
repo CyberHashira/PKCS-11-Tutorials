@@ -1,7 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to encrypt some data using CKM_RSA_PKCS mechanism.
+	This samples demonstrates how to encrypt data using CKM_RSA_PKCS mechanism.
 	Samples generates a session keypair.
 */
 
@@ -35,10 +35,11 @@ CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE hPublic = 0; //Stores handle number of a public key.
 CK_OBJECT_HANDLE hPrivate = 0; // Stores handle number of a private key.
-CK_BYTE plainData[] = "Earth is the third planet of our Solar System.";
-CK_BYTE *encrypted = NULL;
-CK_BYTE *decrypted = NULL;
-CK_ULONG encLen, decLen;
+unsigned char plainData[] = "Earth is the third planet of our Solar System."; // Plaintext.
+CK_BYTE *encryptedData = NULL; // Store encrypted data.
+CK_BYTE *decryptedData = NULL; // Store decrypted data.
+CK_ULONG encLen; // Length of encrypted data.
+CK_ULONG decLen; // Length of decrypted data.
 
 
 
@@ -192,10 +193,10 @@ void encryptData()
 	CK_MECHANISM mech = {CKM_RSA_PKCS};
 	checkOperation(p11Func->C_EncryptInit(hSession, &mech, hPublic), "C_EncryptInit");
 	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, NULL, &encLen), "C_Encrypt");
-	encrypted = new CK_BYTE[encLen];
-	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, encrypted, &encLen), "C_Encrypt");
+	encryptedData = new CK_BYTE[encLen];
+	checkOperation(p11Func->C_Encrypt(hSession, plainData, sizeof(plainData)-1, encryptedData, &encLen), "C_Encrypt");
 	cout << "Encrypted data as Hex - " << endl;
-	printHex(encrypted, encLen);
+	printHex(encryptedData, encLen);
 }
 
 
@@ -205,11 +206,11 @@ void decryptData()
 {
 	CK_MECHANISM mech = {CKM_RSA_PKCS};
 	checkOperation(p11Func->C_DecryptInit(hSession, &mech, hPrivate), "C_DecryptInit");
-	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, NULL, &decLen), "C_Decrypt");
-	decrypted = new CK_BYTE[decLen];
-	checkOperation(p11Func->C_Decrypt(hSession, encrypted, encLen, decrypted, &decLen), "C_Decrypt");
+	checkOperation(p11Func->C_Decrypt(hSession, encryptedData, encLen, NULL, &decLen), "C_Decrypt");
+	decryptedData = new CK_BYTE[decLen];
+	checkOperation(p11Func->C_Decrypt(hSession, encryptedData, encLen, decryptedData, &decLen), "C_Decrypt");
 	cout << "Decrypted data as Hex - " << endl;
-	printHex(decrypted, decLen);
+	printHex(decryptedData, decLen);
 }
 
 

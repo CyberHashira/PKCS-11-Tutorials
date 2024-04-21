@@ -3,7 +3,7 @@
 
 These are some pkcs#11 samples that I've provided for viewers on YouTube. These sample codes were tested on SoftHSM2.
 
-	* * Last Update : Dec-11-2023 * *
+	* * Last Update : Apr-21-2024 * *
 
 
 
@@ -38,14 +38,25 @@ Table of Contents
 
 4. crypto_operations	: contains sample codes that shows how to perform cryptographic operations such as encryption, signing etc.
 
+	- HASHING
+		- CKM_MD5.cpp.....................: shows how to generate hash using CKM_MD5 mechanism.
+		- CKM_SHA_1.cpp...................: shows how to generate hash using CKM_SHA_1 mechanism.
+		- CKM_SHA256.cpp..................: shows how to generate hash using CKM_SHA256 mechanism.
+		- multi_part_digest.cpp...........: shows how to generate hash of a file using multi-part digest operation.
 	- ENCRYPTION
-		- CKM_AES_CBC_PAD.cpp.............: shows how to encrypt some data using CKM_AES_CBC_PAD mechanism.
-		- CKM_RSA_PKCS.cpp................: shows how to encrypt some data using CKM_RSA_PKCS mechanism.
-		- CKM_RSA_PKCS_OAEP.cpp...........: shows how to encrypt some data using CKM_RSA_PKCS_OAEP mechanism.
+		- CKM_DES3_ECB.cpp................: shows how to encrypt using CKM_DES3_ECB mechanism.
+		- CKM_AES_CBC_PAD.cpp.............: shows how to encrypt using CKM_AES_CBC_PAD mechanism.
+		- CKM_AES_CTR.cpp.................: shows how to encrypt using CKM_AES_CTR mechanism.
+		- CKM_AES_GCM.cpp.................: shows how to encrypt using CKM_AES_GCM mechanism.
+		- CKM_RSA_X_509.cpp...............: shows how to encrypt using CKM_RSA_X_509 mechanism.
+		- CKM_RSA_PKCS.cpp................: shows how to encrypt using CKM_RSA_PKCS mechanism.
+		- CKM_RSA_PKCS_OAEP.cpp...........: shows how to encrypt using CKM_RSA_PKCS_OAEP mechanism.
 	- SIGNING
-		- CKM_ECDSA.cpp...................: shows how to sign some data using CKM_ECDSA.
-		- CKM_RSA_PKCS.cpp................: shows how to sign some data using CKM_RSA_PKCS.
-		- CKM_SHA256_RSA_PKCS.cpp.........: shows how to sign some data using CKM_SHA256_RSA_PKCS.cpp
+		- CKM_ECDSA.cpp...................: shows how to sign using CKM_ECDSA mechanism.
+		- CKM_RSA_PKCS.cpp................: shows how to sign using CKM_RSA_PKCS mechanism.
+		- CKM_SHA1_RSA_PKCS.cpp...........: shows how to sign using CKM_SHA1_RSA_PKCS mechanism.
+		- CKM_SHA256_RSA_PKCS.cpp.........: shows how to sign using CKM_SHA256_RSA_PKCS mechanism.
+		- CKM_SHA256_PKCS_PKCS_PSS.cpp....: shows how to sign using CKM_SHA256_RSA_PKCS_PSS mechanism.
 	- MISCELLANEOUS
 		- C_GenerateRandom.cpp............: shows how to generate random data using C_GenerateRandom.
 		- C_SeedRandom.cpp................: shows how to seed PRNG.

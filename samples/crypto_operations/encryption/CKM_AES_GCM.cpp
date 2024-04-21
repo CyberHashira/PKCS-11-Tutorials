@@ -1,9 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This sample shows how to encrypts a plaintext and decrypts it using AES-256 key.
-	This sample uses CKM_AES_GCM mechanism to encrypt/decrypt data.
-	AES key used for encryption is generated as session object.
+	This sample demonstrates how to perform encryption using CKM_AES_GCM mechanism.
 */
 
 
@@ -35,14 +33,14 @@ CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE objHandle = 0;
-CK_BYTE IV[] = "1234567812345678";
-CK_BYTE AAD[] = "127.0.0.1";
-unsigned char plainData[] = "Earth is the third planet of our Solar System.";
-CK_BYTE *encryptedData = NULL;
-CK_BYTE *decryptedData = NULL;
-CK_ULONG encLen;
-CK_ULONG decLen;
-CK_GCM_PARAMS gcmParam;
+CK_BYTE IV[] = "1234567812345678"; // Initialization Vector.
+CK_BYTE AAD[] = "127.0.0.1"; // Additional Auth Data.
+unsigned char plainData[] = "Earth is the third planet of our Solar System."; // Plaintext.
+CK_BYTE *encryptedData = NULL; // Store encrypted data.
+CK_BYTE *decryptedData = NULL; // Store decrypted data.
+CK_ULONG encLen; // Length of encrypted data.
+CK_ULONG decLen; // Length of decrypted data.
+CK_GCM_PARAMS gcmParam; // Structure for passing GCM Parameters.
 
 
 
@@ -177,11 +175,11 @@ void generateAesKey()
 // initialize GCM Parameters.
 void initGCMParam()
 {
-	gcmParam.pIv = IV;
-	gcmParam.ulIvLen = sizeof(IV)-1;
-	gcmParam.pAAD = AAD;
-	gcmParam.ulAADLen = sizeof(AAD)-1;
-	gcmParam.ulTagBits = 128;
+	gcmParam.pIv = IV; // IV
+	gcmParam.ulIvLen = sizeof(IV)-1; // Length of IV
+	gcmParam.pAAD = AAD; // Auth Data.
+	gcmParam.ulAADLen = sizeof(AAD)-1; // Lenght of auth-data
+	gcmParam.ulTagBits = 128; // Tag bits.
 }
 
 

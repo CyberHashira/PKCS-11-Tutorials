@@ -1,8 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to encrypts a plaintext and decrypts it using AES-256 key.
-	This smaple uses CKM_AES_CTR mechanism to encrypt/decrypt the plaintext.
+	This sample demonstrates how to perform encryption using CKM_AES_CTR mechanism.
 */
 
 
@@ -34,13 +33,13 @@ CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE objHandle = 0;
-CK_BYTE IV[] = "1234567812345678";
-CK_AES_CTR_PARAMS ctrParam;
-unsigned char plainData[] = "Earth is the third planet of our Solar System.";
-CK_BYTE *encryptedData = NULL;
-CK_BYTE *decryptedData = NULL;
-CK_ULONG encLen;
-CK_ULONG decLen;
+CK_BYTE counterBits[] = "1234567812345678"; // Nonce for CTR mode of encryption.
+CK_AES_CTR_PARAMS ctrParam; // Structure for passing CTR parameters.
+unsigned char plainData[] = "Earth is the third planet of our Solar System."; // Plaintext.
+CK_BYTE *encryptedData = NULL; // Store encrypted data.
+CK_BYTE *decryptedData = NULL; // Store decrypted data.
+CK_ULONG encLen; // Length of encrypted data.
+CK_ULONG decLen; // Length of decrypted data.
 
 
 
@@ -172,10 +171,10 @@ void generateAesKey()
 
 
 
-// This function initializes the AES-CTR Parameter. It requires IV and counter bits.
+// This function initializes the AES-CTR Parameter.
 void initCTRParam()
 {
-	memcpy(ctrParam.cb, IV, sizeof(IV)-1);
+	memcpy(ctrParam.cb, counterBits, sizeof(counterBits)-1);
 	ctrParam.ulCounterBits = 128;
 }
 

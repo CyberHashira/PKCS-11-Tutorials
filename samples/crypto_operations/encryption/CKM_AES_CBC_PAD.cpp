@@ -1,8 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to encrypts a plaintext and decrypts it using AES-256 key.
-	AES key used for encryption is generated as session object.
+	This sample shows how to perform encryption using CKM_AES_CBC_PAD mechanism.
 */
 
 
@@ -33,13 +32,13 @@ CK_SLOT_ID slotId = 0;
 CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
-CK_OBJECT_HANDLE objHandle = 0;
-CK_BYTE IV[] = "1234567812345678";
-unsigned char plainData[] = "Earth is the third planet of our Solar System.";
-CK_BYTE *encryptedData = NULL;
-CK_BYTE *decryptedData = NULL;
-CK_ULONG encLen;
-CK_ULONG decLen;
+CK_OBJECT_HANDLE objHandle = 0; 
+CK_BYTE IV[] = "1234567812345678"; // IV for CBC Mode of encryption.
+unsigned char plainData[] = "Earth is the third planet of our Solar System."; // Plaintext.
+CK_BYTE *encryptedData = NULL; // Store encrypted data.
+CK_BYTE *decryptedData = NULL; // Store decrypted data.
+CK_ULONG encLen; // Length of encrypted data.
+CK_ULONG decLen; // Length of decrypted data.
 
 
 

@@ -1,9 +1,7 @@
 //Thanks for reading DISCLAIMER.txt
 
 /*
-	This samples shows how to encrypts a plaintext and decrypts it using a triple des key.
-	DES3 key used for encryption is generated as session object
-	This sample will use DES3-ECB mode of encryption.
+	This sample demonstrates how to perform encryption using CKM_DES3_ECB mechanism.
 */
 
 
@@ -35,11 +33,11 @@ CK_SESSION_HANDLE hSession = 0;
 CK_BYTE *slotPin = NULL;
 const char *libPath = NULL;
 CK_OBJECT_HANDLE objHandle = 0;
-unsigned char plainData[] = "1234567812345678";
-CK_BYTE *encryptedData = NULL;
-CK_BYTE *decryptedData = NULL;
-CK_ULONG encLen;
-CK_ULONG decLen;
+unsigned char plainData[] = "1234567812345678"; // Plaintext.
+CK_BYTE *encryptedData = NULL; // Store encrypted data.
+CK_BYTE *decryptedData = NULL; // Store decrypted data.
+CK_ULONG encLen; // Length of encrypted data.
+CK_ULONG decLen; // Length of decrypted data.
 
 
 
