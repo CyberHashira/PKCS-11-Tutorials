@@ -3,7 +3,7 @@
 
 These are some pkcs#11 samples that I've provided for viewers on YouTube. These sample codes were tested on SoftHSM2.
 
-	* * Last Update : Apr-21-2024 * *
+	* * Last Update : Apr-27-2024 * *
 
 
 
@@ -35,6 +35,9 @@ Table of Contents
 		- generate_des3_key.cpp...........: shows how to generate DES3 key using PKCS #11 API.
 		- generate_rsa_keypair.cpp........: shows how to generare RSA keypair using PKCS#11 API.
 		- generate_ecdsa_keypair.cpp......: shows how to generate ECDSA keypair using PKCS#11 API.
+	- FINDING OBJECTS
+		- count_all_keys.cpp..............: shows how to use C_FindObjects function.
+		- find_private_key_to_sing.cpp....: shows how to use a private key store in a token to sign some data.
 
 4. crypto_operations	: contains sample codes that shows how to perform cryptographic operations such as encryption, signing etc.
 
