@@ -4,7 +4,7 @@
 These are some common attributes using in PKCS#11. Attributes are used for describing the properties of an object. These attributes are used when generating an 
 object, finding an object, modifying an object and reading an object. 
 
-	* * Last Update : Dec-08-2023 * *
+	* * Last Update : Apr-27-2024 * *
 
 
 
@@ -36,6 +36,9 @@ ATTRIBUTES -
 | CKA_EXTRACTABLE       | Object can be extracted from a token | CK_BBOOL |
 | CKA_NEVER_EXTRACTABLE | True if CKA_EXTRACTABLE has always been false | CK_BBOOL |
 | CKA_ALWAYS_SENSITIVE  | True if CKA_SENSTITIVE has always been sensitive | CK_BBOOL |
+| CKA_ALWAYS_AUTHENTICATE | If true, user has to authenticate to be able to use (sign/decrypt) a key | CK_BBOOL |
+| CKA_DESTROYABLE 	| If false, an object can't be destroyed using C_DestroyObject | CK_BBOOL |
+| CKA_COPYABLE		| If false, an object can't be copied using C_CopyObject | CK_BBOOL |
 | CKA_MODIFIABLE        | Object can be modified | CK_BBOOL |
 | CKA_EC_PARAMS         | ECDSA curve | CK_BYTE |
 | CKA_EC_POINT          | ECDSA public key | CK_BYTE |

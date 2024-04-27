@@ -55,6 +55,6 @@ RETURN CODES -
 | CKR_USER_TYPE_INVALID         | 0x00000103 | Type of user not valid for a token. |
 | CKR_RANDOM_SEED_NOT_SUPPORTED | 0x00000120 | Seeding a PRNG is not supported for the token. |
 | CKR_RANDOM_NO_RNG			    | 0x00000121 | No PRNG available to generate random data. |
-| CKR_CRYPTOKI_NOT_INITIALIZED 	| 0x00000190 | C_Initialized not called. |
-| CKR_CRYPTOKI_ALREADY_INITIALIZED | 0x00000191 | C_Initialized called more than once. |
+| CKR_CRYPTOKI_NOT_INITIALIZED 	| 0x00000190 | C_Initialize not called. |
+| CKR_CRYPTOKI_ALREADY_INITIALIZED | 0x00000191 | C_Initialize called more than once. |
 | CKR_VENDOR_DEFINED 			| 0x80000000 | Error code reserved for a vendor to use. |
